@@ -2,7 +2,6 @@
 #define __LOG_H_
 
 #include <tools.h>
-#include <kernel.h>
 
 void __log_com(const char* __fmt, ...);
 void __log_term(const char* __fmt, ...);

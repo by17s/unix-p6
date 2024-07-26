@@ -8,6 +8,7 @@
 
 #define DEBUG
 
+#include <sysinit.h>
 #include <log.h>
 
 
