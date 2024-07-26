@@ -1,0 +1,11 @@
+.vscode/
+tmp/
+*.so
+*.o
+*.ko
+*.elf
+*.zip
+*.log
+*.lck
+*.tmp
+*.iso
