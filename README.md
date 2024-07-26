@@ -1,4 +1,5 @@
 # unix-p6
+Unix-p6 is a unix-like operating system for computers based on P6 (Pentium Pro, Pentium II, Pentium III).
 
 # Source Roadmap:
 ---------------
