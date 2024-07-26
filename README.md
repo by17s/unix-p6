@@ -13,7 +13,7 @@
 | release | Release building Makefile & associated tools. |
 | sbin | System commands. |
 | boot | Boot loader sources. |
-| sys | Kernel sources (see [sys/README.md](sys/README.md)). |
+| src | System sources (see [src/README.md](src/README.md)). |
 | tools | Utilities for regression testing and miscellaneous tasks. |
 | usr.bin | User commands. |
 | usr.sbin | System administration commands. |
