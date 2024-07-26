@@ -1,4 +1,4 @@
-# unix x86
+# unix-p6
 
 # Source Roadmap:
 ---------------
