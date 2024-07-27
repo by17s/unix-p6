@@ -20,7 +20,7 @@ bits 32
 
 extern kmain
 extern __kernel_end
-extern __log_com
+extern LOG
 
 global _start
 align 8
@@ -43,17 +43,17 @@ entry_address_tag_start:
     dd _start       ; entry addr
 entry_address_tag_end:
 
-;align 8
-;
-;framebuffer_tag_start:
-;    dw MULTIBOOT_HEADER_TAG_FRAMEBUFFER
-;    dw 0
-;    dd framebuffer_tag_end - framebuffer_tag_start
-;    
-;    dd 800
-;    dd 600
-;    dd 0
-;framebuffer_tag_end:
+align 8
+
+framebuffer_tag_start:
+    dw MULTIBOOT_HEADER_TAG_FRAMEBUFFER
+    dw 0
+    dd framebuffer_tag_end - framebuffer_tag_start
+    
+    dd 800
+    dd 600
+    dd 0
+framebuffer_tag_end:
 
 align 8
 
@@ -78,7 +78,7 @@ _start:
 
     push eax
     push kernel_returned_string
-    call __log_com
+    call LOG
     add esp, 8
 
     cli

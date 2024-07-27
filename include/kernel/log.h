@@ -6,10 +6,6 @@
 void __log_com(const char* __fmt, ...);
 void __log_term(const char* __fmt, ...);
 
-#ifdef DEBUG 
-    #define LOG __log_com
-#else
-    #define LOG __log_term
-#endif
+void LOG(const char* __fmt, ...);
 
 #endif //__LOG_H_

@@ -12,4 +12,6 @@
 #include <multiboot2.h>
 #include <log.h>
 
+#include <sysinit.h>
+
 #endif //__KERNEL_H_
