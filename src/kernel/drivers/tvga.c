@@ -1,3 +1,5 @@
+#include <drivers/tvga.h>
+
 #include <stdint.h>
 #include <stddef.h>
 #include <tools.h>
@@ -12,13 +14,6 @@
 static uint16_t* const tvga_vbuffer = (uint16_t*)VGA_BUFFER_ADDRESS;
 static uint8_t tvga_curattr = DEFAULT_COLOR;
 static uint16_t cursor_pos = 0;
-
-enum vga_cmd
-{
-    VGA_CMD_SETCURSOR,
-    VGA_CMD_SETCOLOR,
-    VGA_CMD_CLEAR
-};
 
 static inline uint16_t attr_entry(unsigned char uc, uint8_t color)
 {
@@ -61,7 +56,7 @@ void tvga_init()
     tvga_reset();
 }
 
-void tvga_command(uint32_t cmd, uint32_t arg1, uint32_t arg2, uint32_t arg3)
+void tvga_command(cmd_t cmd, uint32_t arg1, uint32_t arg2, uint32_t arg3)
 {
     switch(cmd) {
         case VGA_CMD_SETCURSOR:

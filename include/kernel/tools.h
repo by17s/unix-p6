@@ -10,6 +10,8 @@ typedef int bool;
 #define true 1
 #define false 0
 
+typedef int cmd_t;
+
 void tmemcpy(void *dest, void *src, uint32_t n);
 
 void tmemcpyw(void *dest, void *src, uint32_t n);

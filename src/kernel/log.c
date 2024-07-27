@@ -1,5 +1,7 @@
 #include <log.h>
 
+#include <drivers/tvga.h>
+
 #include <x86.h>
 
 void __tvga_putch(char c)

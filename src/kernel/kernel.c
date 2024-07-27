@@ -1,5 +1,5 @@
 #include <kernel.h>
-#include <tvga.h>
+#include <drivers/tvga.h>
 
 const char *__mb2_htags_str[] = {
     "TAG_TYPE_END               ",

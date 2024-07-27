@@ -9,14 +9,9 @@ ARCH=i586
 SRC=src/
 OBJ=obj/
 
-<<<<<<< HEAD
-ASM_FILES_ARCH := $(shell find $(SRC) -name "*.asm")
-C_FILES := $(addprefix ../,$(shell find $(SRC) -name "*.c"))
-=======
 ASM_FILES_ARCH := $(shell find $(SRC)kernel/arch/ -name "*.asm")
 C_FILES := $(addprefix ../,$(shell find $(SRC)kernel/ -name "*.c"))
-C_FILES_KDRIVERS := $(addprefix ../,$(shell find $(SRC)kdrivers/ -name "*.c"))
->>>>>>> d4bb052 (Update Makefile (Added ramfs))
+#C_FILES_KDRIVERS := $(addprefix ../,$(shell find $(SRC)kdrivers/ -name "*.c"))
 
 ISO_NAME=Unix-P6
 ISO_VER=0.0.1a
@@ -35,11 +30,7 @@ build:
 	@grub-mkrescue -o $(ISO_NAME)-$(ISO_VER).iso $(ISO_DIR)
 
 run:
-<<<<<<< HEAD
-	@sudo qemu-system-x86_64 -serial file:$(OUTPUTLOG) -accel kvm -m 512m -boot d -cdrom $(ISO_NAME)-$(ISO_VER).iso -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 
-=======
 	@qemu-system-x86_64 -cpu pentium3 -serial file:serial.log -accel kvm -m 512m -boot d -cdrom $(ISO_NAME)-$(ISO_VER).iso -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 
->>>>>>> d4bb052 (Update Makefile (Added ramfs))
 
 clear:
 	rm obj/*
