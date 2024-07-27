@@ -2,8 +2,8 @@
 
 void tmemcpy(void *dest, void *src, uint32_t n)
 {
-    char *d = (char *)dest;
-    const char *s = (const char *)src;
+    char* d = (char*)dest;
+    const char* s = (const char*)src;
 
     for (uint32_t i = 0; i < n; i++)
     {
@@ -11,10 +11,21 @@ void tmemcpy(void *dest, void *src, uint32_t n)
     }
 }
 
+void tmemcpyw(void *dest, void *src, uint32_t n)
+{
+    uint16_t* d = (uint16_t*)dest;
+    const uint16_t* s = (const uint16_t*)src;
+
+    for (uint16_t i = 0; i < n; i++)
+    {
+        d[i] = s[i];
+    }
+}
+
 void tmemcpyd(void *dest, void *src, uint32_t n)
 {
-    uint32_t *d = (uint32_t *)dest;
-    const uint32_t *s = (const uint32_t *)src;
+    uint32_t* d = (uint32_t*)dest;
+    const uint32_t* s = (const uint32_t*)src;
 
     for (uint32_t i = 0; i < n; i++)
     {
@@ -65,6 +76,16 @@ int tmemcmp(const void *s1, const void *s2, size_t n)
 void *tmemset(void *ptr, uint8_t n, uint32_t size)
 {
     uint8_t *p = (uint8_t *)ptr;
+    for (uint32_t i = 0; i < size; i++)
+    {
+        p[i] = n;
+    }
+    return ptr;
+}
+
+void *tmemsetw(void *ptr, uint16_t n, uint32_t size)
+{
+    uint16_t *p = (uint16_t *)ptr;
     for (uint32_t i = 0; i < size; i++)
     {
         p[i] = n;

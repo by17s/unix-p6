@@ -8,9 +8,8 @@
 
 #define DEBUG
 
-#include <sysinit.h>
+#include <tools.h>
+#include <multiboot2.h>
 #include <log.h>
-
-
 
 #endif //__KERNEL_H_

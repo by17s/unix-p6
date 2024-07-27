@@ -12,6 +12,8 @@ typedef int bool;
 
 void tmemcpy(void *dest, void *src, uint32_t n);
 
+void tmemcpyw(void *dest, void *src, uint32_t n);
+
 void tmemcpyd(void *dest, void *src, uint32_t n);
 
 void tmemcpyd_inv(void *arr, uint32_t n);
@@ -19,6 +21,8 @@ void tmemcpyd_inv(void *arr, uint32_t n);
 int tmemcmp(const void *s1, const void *s2, size_t n);
 
 void *tmemset(void *ptr, uint8_t n, uint32_t size);
+
+void *tmemsetw(void *ptr, uint16_t n, uint32_t size);
 
 void *tmemsetd(void *ptr, uint32_t n, uint32_t size);
 

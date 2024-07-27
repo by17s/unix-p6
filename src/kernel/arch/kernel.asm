@@ -20,6 +20,7 @@ bits 32
 
 extern kmain
 extern __kernel_end
+extern __log_com
 
 global _start
 align 8
@@ -75,16 +76,22 @@ _start:
 
     call kmain
 
-    cli
+    push eax
+    push kernel_returned_string
+    call __log_com
+    add esp, 8
 
+    cli
 halt:
     hlt
     jmp halt
 
 section .bss
 align 16
-    resb 0x2000
+    resb 0x4000
     os_stack_top:
     __bss_end:
 
 section .data
+kernel_returned_string:
+    db "Kernel returned with %i.\n", 0
