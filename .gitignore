@@ -1,4 +1,5 @@
 .vscode/
+obj/
 tmp/
 *.so
 *.o

@@ -35,7 +35,7 @@ const char *__mb2_htag_fb_str[] = {
 
 struct multiboot_tag_mmap *_mmap_mb2 = NULL;
 
-int sys_init(multiboot_uint32_t magic, size_t addr)
+int sys_init(multiboot_uint32_t magic, size_t addr, struct sys_info *info)
 {
   struct multiboot_tag *tag;
   unsigned size;
@@ -122,6 +122,7 @@ int sys_init(multiboot_uint32_t magic, size_t addr)
                tagfb->common.framebuffer_height,
                tagfb->common.framebuffer_bpp);
       LOG(" -> Расположен по адресу 0x%x\n", tagfb->common.framebuffer_addr);
+      info->framebuf = *tagfb;
       break;
     }
     }
