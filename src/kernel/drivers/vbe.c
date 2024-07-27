@@ -40,6 +40,11 @@ int vbe_sendcmd(cmd_t cmd, ...) {
         //u32, u32
        __vbe_fill_line(va_arg(args, uint32_t), va_arg(args, uint32_t));
         break;
+    case VBE_GET_RES:
+        //i32*, i32*
+        *(va_arg(args, int*)) = __vbe_info.w;
+        *(va_arg(args, int*)) = __vbe_info.h;
+        break;
     default:
         va_end(args);
         return 0;
@@ -50,9 +55,9 @@ int vbe_sendcmd(cmd_t cmd, ...) {
 }
 
 int vbe_set_px(size_t pos, uint32_t data) {
-
+    __vbe_info.fb[pos] = data;
 }
 
 uint32_t vbe_get_px(size_t pos) {
-
+    return __vbe_info.fb[pos];
 }
