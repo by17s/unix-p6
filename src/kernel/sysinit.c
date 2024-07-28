@@ -169,7 +169,5 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
   mm_init(free_ptr, free_sz);
 
   modules_init();
-  
-  idt_install();
   return 0;
 }

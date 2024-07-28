@@ -1,101 +1,109 @@
-#include <x86.h>
-
+#include <stdio.h>
+#include <stdint.h>
+#include "x86.h"
 #include <log.h>
 
-#define DIVISION_BY_ZERO 0x0
-#define OVERFLOW 0x4
-#define DOUBLE_FAULT 0x8
-#define SEGMENTATION_FAULT 0x0C
-#define PROTECTION_FAULT 0x0D
-#define INVALID_OPCODE 0x6
-#define PAGE_FAULT 0x0E
+idt_entry_t idt_table[256];
 
-#define SYSCALL 0x80
-#define SYSCALL_SPECIAL 0x50
+irq_handler irq_handlertable[64];
 
-#define IDT_TRAP_GATE         0x8F
-#define IDT_USER_GATE         0xEE
+idtr_t idtr;
 
-typedef struct {
-    uint16_t    offsetLow;   // Lower 16bits of isr address
-    uint16_t  codeSegment;   // Code segment for this ISR
-    uint8_t          zero;   // Set to 0, reserved by intel
-    uint8_t         flags;   // Type and attributes; Flags
-    uint16_t   offsetHigh;   // Upper 16bits of isr address
-} __attribute__ ((packed)) IDT_ENTRY_t;
+extern void* isr_table[];
+extern void* irq_table[];
 
-typedef struct {
-    uint16_t  limit;
-    uint32_t   base;
-} __attribute__ ((packed)) IDR_RECORD_t;
+const char* exception_names[] = {
+    "DivideByZero",             //0
+    "Debug",                    //1
+    "NMI",                      //2
+    "Breakpoint",               //3
+    "Overflow",                 //4
+    "BoundRangeExceed",         //5
+    "InvalidOpcode",            //6
+    "CoprocessorNotAviable",    //7
+    "DoubleFault",              //8
+    "CoprocessorSegmentOverrun",//9
+    "InvalidTSS",               //10
+    "SegmentNotPresent",        //11
+    "StackFault",               //12
+    "GeneralProtection",        //13
+    "PageFault",                //14
+    "",                         //15
+    "x87",                      //16
+    "AlignmentCheck",           //17
+    "MachineCheck",             //18
+    "SIMD",                     //19
+    "Virtualization",           //20
+    "ControlProtection",        //21
+    "",                         //22
+    "",                         //23
+    "",                         //24
+    "",                         //25
+    "",                         //26
+    "",                         //27
+    "",                         //28
+    "HypervisorInjection",      //29
+    "VMMCommunication",         //30
+    "SecurityException"         //31
+};
 
-IDT_ENTRY_t idt[256];
-IDR_RECORD_t idtRecord;
-
-void idt_set_PIC() {
-    outb(0x20, 0x11);
-    outb(0xA0, 0x11);
-
-    outb(0x21, 0x20);
-    outb(0xA1, 0x28);
-
-    outb(0x21, 0x04);
-    outb(0xA1, 0x02);
-
-    outb(0x21, 0x01);
-    outb(0xA1, 0x01);
-
-    outb(0x21, 0xFF);
-    outb(0xA1, 0xFF);
+void idt_setentry(uint8_t vector, void* isr, uint16_t cs, uint8_t flags)
+{
+    idt_table[vector].isr_low = (uint16_t)((uintptr_t)isr);
+    idt_table[vector].isr_high = (uint16_t)((uintptr_t)isr >> 16);
+    idt_table[vector].gdt_cs = cs;
+    idt_table[vector].res = 0;
+    idt_table[vector].flags = flags;
 }
 
-__attribute__((interrupt)) void idt_handler_stub(void *frame) {
-    return;
+void idt_setirqhandler(uint8_t line, irq_handler handler, uint8_t enable)
+{
+    if(line > 15)
+        return;
+
+    irq_handlertable[line] = handler;
+
+    if(enable)
+        irq_clearmask(line);
 }
 
-void idt_set_gate(int int_num, void* isr, uint8_t flags) {
-    IDT_ENTRY_t *idtEntry = &idt[int_num];
+void idt_init() {
+    idtr.offset = (uintptr_t)&idt_table;
+    idtr.limit = sizeof(idt_table) - 1;
 
-    idtEntry->offsetLow = (uintptr_t)isr & 0xFFFF;
-    idtEntry->codeSegment = 0x08;
-    idtEntry->zero = 0;
-    idtEntry->flags = flags;
-    idtEntry->offsetHigh = ((uintptr_t)isr >> 16) & 0xFFFF;
-}
+    tmemset(&idt_table, 0, sizeof(idt_table));
 
-void idt_set_basic_handlers() {
-//    Exceptions && Errors
-    /*
-    idt_set_gate(DIVISION_BY_ZERO,  (void*)exception_handler_divisionByZero,    IDT_TRAP_GATE);
-    idt_set_gate(OVERFLOW,          (void*)exception_handler_overflow,          IDT_TRAP_GATE);
-    idt_set_gate(DOUBLE_FAULT,      (void*)exception_handler_doubleFault,       IDT_TRAP_GATE);
-    idt_set_gate(SEGMENTATION_FAULT,(void*)exception_handler_segmentationFault, IDT_TRAP_GATE);
-    idt_set_gate(PROTECTION_FAULT,  (void*)exception_handler_protectionFault,   IDT_TRAP_GATE);
-    idt_set_gate(PAGE_FAULT,        (void*)exception_handler_pageFault,         IDT_TRAP_GATE);
-    */
-    //idt_set_gate(SYSCALL,           (void*)0,                            IDT_USER_GATE);
-}
-
-void idt_set_stub_handlers() {
-    for (int i = 0; i < 256; ++i) {
-        if (idt[i].flags == 0) {
-            idt_set_gate(i, (void*)idt_handler_stub, IDT_TRAP_GATE);
-        }
+    for (uint8_t vector = 0; vector < 32; vector++) {
+        idt_setentry(vector, isr_table[vector], 0x08, 0x8E);
     }
+
+    irq_remap();
+    irq_clear();
+
+    for (uint8_t i = 0; i < 16; i++) {
+        idt_setentry(i + 0x20, irq_table[i], 0x08, 0x8E);
+    }
+
+    lidt(&idtr);
+    sti();
 }
 
-void idt_install(void) {
-    LOG("Installing IDT...\n");
-    idtRecord.limit = (uint16_t)(sizeof idt);
-    idtRecord.base = (uintptr_t)&idt;
+void handle_exception(isrctx_t ctx)
+{
+    LOG("\nAn exception occurred!\nISR:%i, Name:%s", ctx.intnum, exception_names[ctx.intnum]);
+    if(ctx.errcode)
+        LOG(", Error Code:%x", ctx.errcode >> 3);
+    LOG(".\n");
 
-    idt_set_basic_handlers();
-    idt_set_stub_handlers();
-    idt_set_PIC();
+    cli();
+    while(1)
+        hlt();
+}
 
-    asm volatile("lidt %0" : : "memory"(idtRecord));
-    __asm__ volatile("sti");
+void handle_irqint(irqctx_t ctx)
+{
+    if(irq_handlertable[ctx.irq])
+        irq_handlertable[ctx.irq](&ctx);
 
-    LOG("IDT has been successfully installed and is ready to use.\n");
-    return;
+    irq_sendeoi(ctx.irq);
 }

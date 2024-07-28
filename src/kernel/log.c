@@ -1,7 +1,5 @@
 #include <log.h>
-
 #include <drivers/tvga.h>
-
 #include <x86.h>
 
 // 0 - serial; 1 - terminal
