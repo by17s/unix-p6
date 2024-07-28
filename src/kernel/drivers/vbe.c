@@ -47,11 +47,11 @@ int vbe_sendcmd(cmd_t cmd, ...) {
         break;
     default:
         va_end(args);
-        return 0;
+        return 1;
         break;
     }
     va_end(args);
-    return 1;
+    return 0;
 }
 
 int vbe_set_px(size_t pos, uint32_t data) {

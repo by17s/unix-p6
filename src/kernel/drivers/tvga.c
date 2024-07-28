@@ -56,21 +56,28 @@ void tvga_init()
     tvga_reset();
 }
 
-void tvga_command(cmd_t cmd, uint32_t arg1, uint32_t arg2, uint32_t arg3)
+int tvga_command(cmd_t cmd, ...)
 {
+    va_list args;
+    va_start(args, cmd);
+
     switch(cmd) {
         case VGA_CMD_SETCURSOR:
-            tvga_updatecursor(arg1);
+            tvga_updatecursor(va_arg(args, uint32_t));
             break;
         case VGA_CMD_SETCOLOR:
-            tvga_setattr((uint8_t)arg1);
+            tvga_setattr(va_arg(args, uint8_t));
             break;
         case VGA_CMD_CLEAR:
             tvga_clr();
             break;
         default:
+        return 1;
             break;
     }
+
+    va_end(args);
+    return 0;
 }
 
 static void tvga_linefeed()
