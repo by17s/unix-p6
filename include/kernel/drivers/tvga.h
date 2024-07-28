@@ -12,5 +12,5 @@ enum vga_cmd
 };
 
 void tvga_init(void);
-void tvga_command(cmd_t cmd, uint32_t arg1, uint32_t arg2, uint32_t arg3);
+int tvga_command(cmd_t cmd, ...);
 void tvga_write(const char* str, uint32_t count);

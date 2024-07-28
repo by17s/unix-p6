@@ -112,4 +112,13 @@ static inline void io_wait(void)
 
 void com_write(char data);
 
+// == arch/idt.c ==
+#define IDT_TRAP_GATE         0x8F
+#define IDT_USER_GATE         0xEE
+
+void idt_set_gate(int int_num, void* isr, uint8_t flags);
+
+void idt_install(void);
+
+
 #endif //__ARCH_H_

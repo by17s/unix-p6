@@ -1,12 +1,17 @@
+#define __IS_SYSINIT_C
 #include <sysinit.h>
 
 #include <multiboot2.h>
 #include <log.h>
 
 #include <mem.h>
+#include <modules.h>
 
+#include <x86.h>
 #include <drivers/tvga.h>
 #include <drivers/vbe.h>
+
+sys_config_t sys_config;
 
 const char *__mb2_htags_str[] = {
     "TAG_TYPE_END               ",
@@ -40,7 +45,11 @@ const char *__mb2_htag_fb_str[] = {
 };
 
 int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
-    struct multiboot_tag *tag;
+  struct multiboot_tag_module *module_tag = NULL;
+  size_t free_sz;
+  void* free_ptr;
+
+  struct multiboot_tag *tag;
   unsigned size;
 
   /*  Am I booted by a Multiboot-compliant boot loader? */
@@ -80,6 +89,7 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
                ((struct multiboot_tag_module *)tag)->mod_start,
                ((struct multiboot_tag_module *)tag)->mod_end,
                ((struct multiboot_tag_module *)tag)->cmdline);
+      module_add_to_list((struct multiboot_tag_module *)tag);
       break;
     case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
       LOG(" -> mem_lower = %uKB, mem_upper = %uKB\n",
@@ -97,8 +107,6 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
       multiboot_memory_map_t *mmap;
 
       LOG(" -> Memory map\n");
-      size_t free_sz;
-      void* free_ptr;
       for (mmap = ((struct multiboot_tag_mmap *)tag)->entries;
            (multiboot_uint8_t *)mmap < (multiboot_uint8_t *)tag + tag->size;
            mmap = (multiboot_memory_map_t *)((unsigned long)mmap + ((struct multiboot_tag_mmap *)tag)->entry_size)) {
@@ -114,7 +122,7 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
               free_sz = mmap->len;
             }
            }
-           mm_init(free_ptr, free_sz);
+           
         
     }
       break;
@@ -134,6 +142,7 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
       switch (tagfb->common.framebuffer_type)
       {
       case MULTIBOOT_FRAMEBUFFER_TYPE_EGA_TEXT:
+
         tvga_init();
         break;
       case MULTIBOOT_FRAMEBUFFER_TYPE_RGB:
@@ -148,6 +157,7 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
       default:
         break;
       }
+      sys_config.disp_drv = tagfb->common.framebuffer_type;
       break;
     }
     }
@@ -155,5 +165,11 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
   tag = (struct multiboot_tag *)((multiboot_uint8_t *)tag + ((tag->size + 7) & ~7));
   LOG(" MBI size: %u bytes\n", (unsigned)tag - addr);
   LOG("[INF ] Bootloader data reading complete.\n");
-    return 0;
+
+  mm_init(free_ptr, free_sz);
+
+  modules_init();
+  
+  idt_install();
+  return 0;
 }

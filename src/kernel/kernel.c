@@ -9,6 +9,8 @@ int kmain(multiboot_uint32_t magic, uint32_t addr)
   int w, h;
   vbe_sendcmd(VBE_GET_RES, &w, &h);
   LOG("res %dx%d\n", w, h);
+
+  
   
   return 1;
 }
