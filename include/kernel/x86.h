@@ -3,6 +3,14 @@
 
 #include <tools.h>
 
+#define DPL_KRNL 0x0
+#define DPL_USER 0x3
+
+#define IS_CS 0x1
+#define IS_DS 0x0
+
+#define NUMSEGS 5
+
 typedef struct {
     uint16_t limit_low : 16;        // Low bits of segment limit
     uint16_t offset_low : 16;       // Low bits of segment base address
@@ -40,6 +48,31 @@ typedef struct {
     uint16_t limit;
     uint32_t offset;
 } __attribute__((packed)) gdtr_t;
+
+/*/ seg.c /*/
+void seg_init(void);
+/*/ gdt_flush.asm /*/
+void gdtflush(gdtr_t* gtdr);
+
+static inline void gdt_setgate(gdt_entry_t* entry, uint32_t offset, uint32_t limit, uint8_t dpl, uint8_t iscsords, uint8_t iscs)
+{
+    entry->offset_low = offset & 0xFFFF;
+    entry->offset_middle = (offset >> 16) & 0xFF;
+    entry->offset_high = offset >> 24;
+    entry->limit_low = limit & 0xFFFF;
+    entry->limit_high = (limit >> 16) & 0xFF;
+    entry->a = 0;
+    entry->p = 1;
+    entry->dpl = dpl;
+    entry->s = !iscsords;
+    entry->e = iscs;
+    entry->db = 1;
+    entry->rw = 1;
+    entry->dc = 0;
+    entry->g = 1;
+    entry->res1 = 0;
+    entry->res2 = 0;
+}
 
 static inline void outb(uint16_t port, uint8_t val)
 {
