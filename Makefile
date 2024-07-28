@@ -9,7 +9,7 @@ ARCH=i586
 SRC=src/
 OBJ=obj/
 
-ASM_FILES_ARCH := $(shell find $(SRC)kernel/arch/ -name "*.asm")
+ASM_FILES_ARCH := $(addprefix ../,$(shell find $(SRC)kernel/arch/ -name "*.asm"))
 C_FILES := $(addprefix ../,$(shell find $(SRC)kernel/ -name "*.c"))
 #C_FILES_KDRIVERS := $(addprefix ../,$(shell find $(SRC)kdrivers/ -name "*.c"))
 
@@ -21,9 +21,16 @@ OUTPUTLOG=/dev/pts/0
 
 build:
 	#==[ NASM ]==#
-	@cd obj;$(ASMC) $(ASMC_ARGS) ../$(ASM_FILES_ARCH) -o aarch.o
+	@cd obj;for element in $(notdir $(ASM_FILES_ARCH)); do \
+		$(ASMC) $(ASMC_ARGS) ../src/kernel/arch/$$element -o $$element.o; \
+		echo \~ Building asm object $$element; \
+	done
 	#==[ GCC  ]==#
-	@cd obj;$(CC) $(CC_ARGS) $(C_FILES)
+	@cd obj;for element in $(C_FILES); do \
+		filename=$$(basename $$element); \
+		$(CC) $(CC_ARGS) $$element -o $$filename.o; \
+		echo \~ Building С object $$filename; \
+	done
 	#==[ LD   ]==#
 	@ld -m elf_i386 -T link.ld -o $(ISO_DIR)boot/kernel.elf $(shell find obj -name "*.o")
 	#==[ GRUB ]==#
@@ -36,4 +43,4 @@ clear:
 	rm obj/*
 
 ramfs:
-	tar -cvf iso/sys/initramfs.tar -C initramfs .
+	@tar -cvf iso/sys/initramfs.tar -C initramfs .
