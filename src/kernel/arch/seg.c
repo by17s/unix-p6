@@ -12,7 +12,7 @@ void seg_init()
     gdt_setgate(&gdt_table[1], 0x0, 0xFFFFF, DPL_KRNL, 0, IS_CS);
     gdt_setgate(&gdt_table[2], 0x0, 0xFFFFF, DPL_KRNL, 0, IS_DS);
     gdt_setgate(&gdt_table[3], 0x0, 0xFFFFF, DPL_USER, 0, IS_CS);
-    gdt_setgate(&gdt_table[3], 0x0, 0xFFFFF, DPL_USER, 0, IS_DS);
+    gdt_setgate(&gdt_table[4], 0x0, 0xFFFFF, DPL_USER, 0, IS_DS);
 
     gdt_flush(&gdtr);
 }

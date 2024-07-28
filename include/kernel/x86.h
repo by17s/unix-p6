@@ -197,5 +197,4 @@ void idt_set_gate(int int_num, void* isr, uint8_t flags);
 
 void idt_install(void);
 
-
 #endif //__ARCH_H_
