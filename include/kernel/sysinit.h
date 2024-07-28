@@ -1,5 +1,5 @@
-#ifndef __ARCH_H_
-#define __ARCH_H_
+#ifndef __SYSINIT_H_
+#define __SYSINIT_H_
 
 #include <multiboot2.h>
 
@@ -11,4 +11,4 @@ typedef struct {
 
 int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags);
 
-#endif //__ARCH_H_
+#endif //__SYSINIT_H_

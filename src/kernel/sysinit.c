@@ -3,6 +3,8 @@
 #include <multiboot2.h>
 #include <log.h>
 
+#include <mem.h>
+
 #include <drivers/tvga.h>
 #include <drivers/vbe.h>
 
@@ -95,17 +97,25 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
       multiboot_memory_map_t *mmap;
 
       LOG(" -> Memory map\n");
-
+      size_t free_sz;
+      void* free_ptr;
       for (mmap = ((struct multiboot_tag_mmap *)tag)->entries;
            (multiboot_uint8_t *)mmap < (multiboot_uint8_t *)tag + tag->size;
-           mmap = (multiboot_memory_map_t *)((unsigned long)mmap + ((struct multiboot_tag_mmap *)tag)->entry_size))
-        LOG(" --> Address: 0x%x%x,"
+           mmap = (multiboot_memory_map_t *)((unsigned long)mmap + ((struct multiboot_tag_mmap *)tag)->entry_size)) {
+            LOG(" --> Address: 0x%x%x,"
                  " Size: 0x%x%x, Type: 0x%x\n",
                  (unsigned)(mmap->addr >> 32),
                  (unsigned)(mmap->addr & 0xffffffff),
                  (unsigned)(mmap->len >> 32),
                  (unsigned)(mmap->len & 0xffffffff),
                  (unsigned)mmap->type);
+            if(mmap->addr > 0 && mmap->addr < UINT32_MAX && mmap->type == MULTIBOOT_MEMORY_AVAILABLE) {
+              free_ptr = (void*)(unsigned)(mmap->addr >> 32);
+              free_sz = mmap->len;
+            }
+           }
+           mm_init(free_ptr, free_sz);
+        
     }
       break;
     case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
