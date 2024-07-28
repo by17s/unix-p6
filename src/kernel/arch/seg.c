@@ -1,4 +1,3 @@
-#include <string.h>
 #include "x86.h"
 
 gdt_entry_t gdt_table[NUMSEGS];

@@ -52,7 +52,7 @@ typedef struct {
 /*/ seg.c /*/
 void seg_init(void);
 /*/ gdt_flush.asm /*/
-void gdtflush(gdtr_t* gtdr);
+void gdt_flush(gdtr_t* gtdr);
 
 static inline void gdt_setgate(gdt_entry_t* entry, uint32_t offset, uint32_t limit, uint8_t dpl, uint8_t iscsords, uint8_t iscs)
 {
