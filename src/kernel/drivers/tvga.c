@@ -66,7 +66,7 @@ int tvga_command(cmd_t cmd, ...)
             tvga_updatecursor(va_arg(args, uint32_t));
             break;
         case VGA_CMD_SETCOLOR:
-            tvga_setattr(va_arg(args, uint8_t));
+            tvga_setattr((uint8_t)va_arg(args, uint32_t));
             break;
         case VGA_CMD_CLEAR:
             tvga_clr();
