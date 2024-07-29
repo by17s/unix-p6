@@ -30,7 +30,7 @@ void irq_sendeoi(uint8_t irq)
 	outb(PIC1_COMMAND,PIC_EOI);
 }
 
-void irq_remap()
+void irq_remap(uint8_t start_int)
 {
 	uint8_t a1 = inb(PIC1_DATA);                        // save masks
 	uint8_t a2 = inb(PIC2_DATA);
@@ -40,9 +40,9 @@ void irq_remap()
 	outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
 	io_wait();
 
-	outb(PIC1_DATA, 0x20);                 // ICW2: Master PIC vector offset
+	outb(PIC1_DATA, start_int);                 // ICW2: Master PIC vector offset
 	io_wait();
-	outb(PIC2_DATA, 0x28);                 // ICW2: Slave PIC vector offset
+	outb(PIC2_DATA, start_int + 8);                 // ICW2: Slave PIC vector offset
 	io_wait();
 
 	outb(PIC1_DATA, 4);                       // ICW3: tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)

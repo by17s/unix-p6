@@ -77,7 +77,7 @@ void idt_init() {
         idt_setentry(vector, isr_table[vector], 0x08, 0x8E);
     }
 
-    irq_remap();
+    irq_remap(0x20);
     irq_clear();
 
     for (uint8_t i = 0; i < 16; i++) {

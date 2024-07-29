@@ -63,7 +63,11 @@ int tvga_command(cmd_t cmd, ...)
 
     switch(cmd) {
         case VGA_CMD_SETCURSOR:
-            tvga_updatecursor(va_arg(args, uint32_t));
+            uint32_t cursor = va_arg(args, uint32_t);
+            if(cursor >= VGA_WIDTH * VGA_HEIGHT)
+                return 2;
+            
+            tvga_updatecursor(cursor);
             break;
         case VGA_CMD_SETCOLOR:
             tvga_setattr((uint8_t)va_arg(args, uint32_t));

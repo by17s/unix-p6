@@ -14,4 +14,7 @@
 
 #include <sysinit.h>
 
+extern uint32_t __kernel_start;
+extern uint32_t __kernel_end;
+
 #endif //__KERNEL_H_

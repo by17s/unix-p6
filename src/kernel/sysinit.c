@@ -166,8 +166,6 @@ int sys_init(multiboot_uint32_t magic, uint32_t addr, int flags) {
   LOG(" MBI size: %u bytes\n", (unsigned)tag - addr);
   LOG("[INF ] Bootloader data reading complete.\n");
 
-  mm_init(free_ptr, free_sz);
-
   modules_init();
   return 0;
 }

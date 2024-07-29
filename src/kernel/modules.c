@@ -20,13 +20,8 @@ module_t *module_get(size_t idx) {
 module_t *module_search(char *name) {
     for (size_t i = 0; i < __modules_counter; i++) {
         module_t *mdl = (module_t*)__modules[__modules_counter];
-        if(
-            mdl->magic[0] == 'u' &&
-            mdl->magic[1] == 'x' &&
-            mdl->magic[2] == 'm' &&
-            mdl->magic[3] == 'd' &&
-            mdl->magic[4] == 'l'
-        ) {
+        if(tmemcmp(mdl->magic, "uxmdl", 5))
+        {
             if(check_eq_of_strings(mdl->name, name)) {
                 return mdl;
             }

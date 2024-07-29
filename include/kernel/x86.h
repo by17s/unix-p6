@@ -83,11 +83,10 @@ void idt_setirqhandler(uint8_t line, irq_handler handler, uint8_t enable);
 void idt_init(void);
 /*/ irq.c /*/
 void irq_sendeoi(uint8_t irqline);
-void irq_remap(void);
+void irq_remap(uint8_t start_int);
 void irq_setmask(uint8_t irqline);
 void irq_clearmask(uint8_t irqline);
 void irq_clear(void);
-
 /*/ seg.c /*/
 void seg_init(void);
 /*/ gdt_flush.asm /*/

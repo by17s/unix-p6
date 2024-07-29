@@ -32,7 +32,7 @@ build:
 		echo \~ Building С object $$filename; \
 	done
 	#==[ LD   ]==#
-	@ld -m elf_i386 -T link.ld -o $(ISO_DIR)boot/kernel.elf $(shell find obj -name "*.o")
+	ld -m elf_i386 -T link.ld -o $(ISO_DIR)boot/kernel.elf $(shell find $(OBJ) -name "*.o")
 	#==[ GRUB ]==#
 	@grub-mkrescue -o $(ISO_NAME)-$(ISO_VER).iso $(ISO_DIR)
 
@@ -41,6 +41,7 @@ run:
 
 clear:
 	rm obj/*
+	rm iso/boot/kernel.elf
 
 ramfs:
 	@tar -cvf iso/sys/initramfs.tar -C initramfs .

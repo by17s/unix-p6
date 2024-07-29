@@ -19,7 +19,6 @@ bits 32
 %define MULTIBOOT_HEADER_TAG_RELOCATABLE  10
 
 extern kmain
-extern __kernel_end
 extern LOG
 
 global _start
