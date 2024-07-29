@@ -29,6 +29,10 @@ uint32_t bitmap_stack_top = 0;
 
 bitmap_list_t* firstblock = NULL;
 
+size_t m_dyn_available, m_dyn_total = 0; 
+void *m_dyn_base, *m_dyn_limit = NULL;
+mem_block_t* m_dyn_first_block = NULL;
+
 uint32_t align_up(uint32_t address, uint32_t align) {
     if (align <= 0) {
         return address;
@@ -104,7 +108,7 @@ bitmap_list_t* mm_initmemblock(memblock_entry_t* block)
     if(is_block_under1mb(block))
     {
         block->type = MEM_BLOCK_RESERVED;
-        printf("Chunk is under 1MB\n");
+        LOG("Chunk is under 1MB\n");
         return NULL;
     }
 
@@ -130,7 +134,7 @@ bitmap_list_t* mm_initmemblock(memblock_entry_t* block)
 
 	if(block->len >= MEM_DYNAMIC_MIN_SIZE && !m_dyn_first_block)
 	{
-		m_dyn_base = block->addr;
+		m_dyn_base = (void*)block->addr;
     	m_dyn_total = MEM_DYNAMIC_MIN_SIZE;
 
     	m_dyn_first_block = (mem_block_t*)m_dyn_base;
@@ -155,7 +159,7 @@ bitmap_list_t* mm_initmemblock(memblock_entry_t* block)
     block_setstart(block, alignedaddr);
 
     //Clear block with zero
-    memset((void*)block->addr, 0, block->len);
+    tmemset((void*)block->addr, 0, block->len);
 
     uint32_t blocks = 0;
     uint32_t bitmaps = 0;
@@ -317,10 +321,6 @@ void mm_init(void* mmap_addr, uint32_t mmap_length)
         }
     }
 }
-
-size_t m_dyn_available, m_dyn_total = 0; 
-void *m_dyn_base, *m_dyn_limit = NULL;
-mem_block_t* m_dyn_first_block = NULL;
 
 static void merge_blocks(mem_block_t *start) {
 	if (!start->free) return;
