@@ -179,7 +179,7 @@ bitmap_list_t* mm_initmemblock(memblock_entry_t* block)
     return entry;
 }
 
-void* fralloc(uint32_t count, uint32_t align_up)
+void* frame_alloc(uint32_t count, uint32_t align_up)
 {
     if(count == 0 || count > 32)
         return NULL;
@@ -259,7 +259,7 @@ void* fralloc(uint32_t count, uint32_t align_up)
     return NULL;
 }
 
-void frfree(void* addr, uint32_t count)
+void frame_free(void* addr, uint32_t count)
 {
     uint32_t addrint = (uint32_t)addr;
 
@@ -404,39 +404,3 @@ void kfree(void* ptr) {
 	}
     
 }
-
-//int mm_init(void *addr, size_t size)
-//{
-//    LOG("[INF ] Initializing the memory manager.\n");
-//    size_t base = (size_t)addr;
-//
-//    if (size < MEM_DYNAMIC_MIN_SIZE * 2)
-//        return -1;
-//
-//    m_frames_limit = (size - MEM_DYNAMIC_MIN_SIZE) / MEM_FRAME_SIZE - 2;
-//    LOG(" -> Total frames: %u\n", m_frames_limit);
-//
-//    size_t bitmap_size = m_frames_limit / 8;
-//    LOG(" -> Bitmap size (in bytes): %u\n", bitmap_size);
-//
-//    m_bitmap = (uint8_t *)addr;
-//    m_frames_base = addr + bitmap_size;
-//    m_frames_base += MEM_FRAME_SIZE - ((size_t)m_frames_base % MEM_FRAME_SIZE);
-//    //LOG(" -> Frames base: %x\n", m_frames_base);
-//
-//    // clear bitmap
-//    for (size_t i = 0; i < m_frames_limit + 1; i++)
-//        BIT_CLEAR(m_bitmap, i);
-//
-//    
-//    m_dyn_base = m_frames_base + (m_frames_limit * MEM_FRAME_SIZE);
-//    m_dyn_total = size - (m_dyn_base - addr);
-//
-//    m_dyn_first_block = (mem_block_t*)m_dyn_base;
-//    m_dyn_first_block->free = 1;
-//    m_dyn_first_block->size = m_dyn_total - sizeof(mem_block_t);
-//    m_dyn_first_block->next = NULL;
-//
-//    //LOG(" -> Dynamic memory size (in bytes): %zx\n",  m_dyn_total);  
-//    LOG("[INF ] Memory manager initialization complete.\n");
-//}

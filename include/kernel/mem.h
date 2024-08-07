@@ -38,8 +38,8 @@ typedef struct memblock_entry memblock_entry_t;
 
 void mm_init(void* mmap_addr, uint32_t mmap_length);
 bitmap_list_t* mm_initmemblock(memblock_entry_t* block);
-void* fralloc(uint32_t count, uint32_t align_up);
-void frfree(void* addr, uint32_t count);
+void* frame_alloc(uint32_t count, uint32_t align_up);
+void frame_free(void* addr, uint32_t count);
 
 void* kmalloc(size_t size);
 void kfree(void* ptr);
