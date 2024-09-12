@@ -24,25 +24,9 @@ typedef struct mem_block_s {
     uint8_t* data[0];
 } mem_block_t;
 
-bitmap_list_t bitmap_stack[BITMAP_STACK_SIZE];
-uint32_t bitmap_stack_top = 0;
-
-bitmap_list_t* firstblock = NULL;
-
-size_t m_dyn_available, m_dyn_total = 0; 
-void *m_dyn_base, *m_dyn_limit = NULL;
-mem_block_t* m_dyn_first_block = NULL;
-
-uint32_t align_up(uint32_t address, uint32_t align) {
-    if (align <= 0) {
-        return address;
-    }
-    uint32_t remainder = address % align;
-    if (remainder == 0) {
-        return address;
-    }
-    return address + align - remainder;
-}
+extern size_t m_dyn_available, m_dyn_total; 
+extern void *m_dyn_base, *m_dyn_limit;
+extern mem_block_t* m_dyn_first_block;
 
 
 static void merge_blocks(mem_block_t *start) {

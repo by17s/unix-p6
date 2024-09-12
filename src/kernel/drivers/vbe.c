@@ -61,3 +61,7 @@ int vbe_set_px(size_t pos, uint32_t data) {
 uint32_t vbe_get_px(size_t pos) {
     return __vbe_info.fb[pos];
 }
+
+int vbe_draw_char_bitmap0(char* font, char ch, int w, int h) {
+
+}
