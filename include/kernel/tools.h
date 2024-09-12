@@ -40,6 +40,8 @@ char *strcpy(char *dest, const char *src);
 
 int strcmp(char *str1, const char *str2);
 
+int strncmp(char *s1, char *s2, size_t n);
+
 int findch(uint32_t start_index, char target, char *str);
 
 int str_to_upper(int c);

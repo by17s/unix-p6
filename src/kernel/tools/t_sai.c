@@ -37,6 +37,25 @@ int strcmp(char *str1, const char *str2)
     return 0;
 }
 
+int strncmp(char *s1, char *s2, size_t n) {
+    size_t i = 0;
+
+    while (i < n && s1[i] != '\0' && s2[i] != '\0') {
+        if (s1[i] != s2[i]) {
+            return (uint8_t)s1[i] - (uint8_t)s2[i];
+        }
+        i++;
+    }
+
+    if (i < n) {
+        if (s1[i] != s2[i]) {
+            return (uint8_t)s1[i] - (uint8_t)s2[i];
+        }
+    }
+
+    return 0;
+}
+
 int findch(uint32_t start_index, char target, char *str)
 {
     for (uint32_t i = start_index; str[i] != '\0'; i++)

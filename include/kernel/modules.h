@@ -5,13 +5,7 @@
 #include <log.h>
 #include <multiboot2.h>
 
-typedef struct {
-    char magic[5];
-    char ver[3];
-    char name[32];
-    uint32_t flags;
-    uint8_t data[0];
-} module_t;
+typedef struct multiboot_tag_module module_t;
 
 void module_add_to_list(struct multiboot_tag_module *m);
 

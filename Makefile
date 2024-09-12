@@ -8,6 +8,7 @@ ARCH=i586
 
 SRC=src/
 OBJ=obj/
+RAMFS=initrd/
 
 ASM_FILES_ARCH := $(addprefix ../,$(shell find $(SRC)kernel/arch/ -name "*.asm"))
 C_FILES := $(addprefix ../,$(shell find $(SRC)kernel/ -name "*.c"))
@@ -20,24 +21,29 @@ ISO_DIR=iso/
 OUTPUTLOG=/dev/pts/0
 
 build:
-	#==[ NASM ]==#
+	#==[ NASM  ]==#
 	@cd obj;for element in $(notdir $(ASM_FILES_ARCH)); do \
 		$(ASMC) $(ASMC_ARGS) ../src/kernel/arch/$$element -o $$element.o; \
 		echo \~ Building asm object $$element; \
 	done
-	#==[ GCC  ]==#
+	#==[ GCC   ]==#
 	@cd obj;for element in $(C_FILES); do \
 		filename=$$(basename $$element); \
 		$(CC) $(CC_ARGS) $$element -o $$filename.o; \
 		echo \~ Building С object $$filename; \
 	done
-	#==[ LD   ]==#
+	#==[ LD    ]==#
 	ld -m elf_i386 -T link.ld -o $(ISO_DIR)boot/kernel.elf $(shell find $(OBJ) -name "*.o")
-	#==[ GRUB ]==#
+	#==[ RAMFS ]==#
+	@tar -cf $(ISO_DIR)boot/initrd.tar $(RAMFS)
+	#==[ GRUB  ]==#
 	@grub-mkrescue -o $(ISO_NAME)-$(ISO_VER).iso $(ISO_DIR)
 
 run:
 	@qemu-system-x86_64 -cpu pentium3 -serial file:serial.log -accel kvm -m 512m -boot d -cdrom $(ISO_NAME)-$(ISO_VER).iso -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 
+
+init:
+	@mkdir obj
 
 clear:
 	rm obj/*
