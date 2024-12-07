@@ -44,15 +44,15 @@ entry_address_tag_end:
 
 align 8
 
-framebuffer_tag_start:
-    dw MULTIBOOT_HEADER_TAG_FRAMEBUFFER
-    dw 0
-    dd framebuffer_tag_end - framebuffer_tag_start
+; framebuffer_tag_start:
+;     dw MULTIBOOT_HEADER_TAG_FRAMEBUFFER
+;     dw 0
+;     dd framebuffer_tag_end - framebuffer_tag_start
     
-    dd 800
-    dd 600
-    dd 0
-framebuffer_tag_end:
+;     dd 800
+;     dd 600
+;     dd 0
+; framebuffer_tag_end:
 
 align 8
 

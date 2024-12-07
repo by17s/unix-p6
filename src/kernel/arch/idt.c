@@ -1,12 +1,11 @@
-c
+#include <x86.h>           // Include x86 architecture-specific definitions
 #include <stdio.h>        // Include standard input/output functions
-#include <stdint.h>      // Include standard integer types
-#include "x86.h"        // Include x86 architecture-specific definitions
+#include <stdint.h>      // Include standard integer types       
 #include <log.h>        // Include logging functions
 
 // Define IDT entry and IRQ handler tables
-idt_entry_t idt_table[256];          // IDT with 256 entries
-irq_handler irq_handlertable[64];    // Table for IRQ handlers
+idt_entry_t idt_table[256];             // IDT with 256 entries
+irq_handler irq_handlertable[64];      // Table for IRQ handlers
 idtr_t idtr;                          // IDTR structure for IDT base and limit
 
 // External references to ISR and IRQ tables

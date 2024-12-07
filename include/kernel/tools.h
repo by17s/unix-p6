@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdarg.h>
 
+#include <types.h>
+
 #define BIT_SET(BITMAP, BIT) (BITMAP[(BIT) / 8] |= (1 << ((BIT) % 8)))
 #define BIT_CLEAR(BITMAP, BIT) (BITMAP[(BIT) / 8] &= ~(1 << ((BIT) % 8)))
 #define BIT_GET(BITMAP, BIT) ((BITMAP[(BIT) / 8] >> ((BIT) % 8)) & 1)

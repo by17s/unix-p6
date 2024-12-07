@@ -22,6 +22,6 @@ module_t *module_search(char *name) {
 
 int modules_init(void)
 {
-    LOG("[INF ] Modules loaded: %d\n", __modules_counter);
+    LOG("[INF ] Modules loaded: %d\n", __modules_count);
     return 0;
 }
