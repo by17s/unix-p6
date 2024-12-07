@@ -90,6 +90,19 @@ void *tmemsetd(void *ptr, uint32_t n, uint32_t size) {
     return ptr; // Return the original pointer
 }
 
+void * memchr(const void * src, int c, size_t n) {
+	const unsigned char * s = src;
+	c = (unsigned char)c;
+	for (; ((uintptr_t)s & (ALIGN - 1)) && n && *s != c; s++, n--);
+	if (n && *s != c) {
+		const size_t * w;
+		size_t k = ONES * c;
+		for (w = (const void *)s; n >= sizeof(size_t) && !HASZERO(*w^k); w++, n -= sizeof(size_t));
+		for (s = (const void *)w; n && *s != c; s++, n--);
+	}
+	return n ? (void *)s : 0;
+}
+
 // Structure used for fast copy operation with a dummy array of bytes
 typedef struct {
     unsigned char dummy[32]; 

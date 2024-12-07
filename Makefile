@@ -54,11 +54,13 @@ build:
 	@grub-mkrescue -o $(ISO_NAME)-$(ISO_VER).iso $(ISO_DIR)
 
 run:
-	@qemu-system-x86_64 -cpu pentium3 -serial file:serial.log \
+	@qemu-system-x86_64 \
+		-cpu pentium3 \
 	    -accel kvm -m 512m -boot d \
 	    -cdrom $(ISO_NAME)-$(ISO_VER).iso \
 	    -netdev socket,id=n0,listen=:2030 \
-	    -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 
+	    -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 \
+		-serial file:$(OUTPUTLOG) \
 
 init:
 	@mkdir -p $(OBJ)

@@ -2,8 +2,8 @@
 #include <drivers/tvga.h> // Include TVGA driver header for video output
 #include <x86.h>         // Include x86 architecture-specific definitions
 
-// 0 - serial; 1 - terminal
-int __log_out = 0; // Output destination for logs (0: serial, 1: terminal)
+
+int __log_out = 1; // Output destination for logs (0: serial, 1: terminal)
 
 // Function to output a character to TVGA display
 void __tvga_putch(char c)
