@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdarg.h>
 
+#include <debug.h>
+
 #include <types.h>
 
 #define MIN(A, B) ((A) < (B) ? (A) : (B))

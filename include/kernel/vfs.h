@@ -1,8 +1,12 @@
 #ifndef __VFS_H_
 #define __VFS_H_
 
+#include <errno.h>
+
 #include <types.h>
 #include <time.h>
+
+#include <util/tree.h>
 
 #define PATH_SEPARATOR '/'
 #define PATH_SEPARATOR_STRING "/"
@@ -169,6 +173,18 @@ typedef struct fs_node {
 	size_t metadata[4];
 } fs_node_t;
 
+struct vfs_entry {
+	char * name;
+	fs_node_t * file;
+	char * device;
+	char * fs_type;
+};
+
+typedef fs_node_t * (*vfs_mount_callback)(const char * arg, const char * mount_point);
+
 void vfs_init(void);
+tree_node_t *vfs_mount(const char* mountpoint, fs_node_t *local_root);
+
+int vfs_register_fs(const char * name, vfs_mount_callback callback);
 
 #endif //__VFS_H_

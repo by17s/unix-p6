@@ -60,7 +60,7 @@ run:
 	    -cdrom $(ISO_NAME)-$(ISO_VER).iso \
 	    -netdev socket,id=n0,listen=:2030 \
 	    -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 \
-		-serial file:$(OUTPUTLOG) \
+		-serial file:serial.log \
 
 init:
 	@mkdir -p $(OBJ)

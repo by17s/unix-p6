@@ -13,6 +13,7 @@ int kmain(multiboot_uint32_t magic, uint32_t addr)
 
 
     vfs_init();
+    vfs_mount("/dev/null", (void*)1); //test
     /* 
     Uncommented section to get VBE resolution:
     int w, h;
@@ -22,7 +23,7 @@ int kmain(multiboot_uint32_t magic, uint32_t addr)
 
     module_t *mdl = module_get(0); // Retrieve the first loaded module
     LOG("paddr=%x size=%u\n", mdl->mod_start, mdl->mod_end - mdl->mod_start); // Log module start address and size
-
+    
     // tar_t *tar = tar_init((char*)mdl->mod_start, mdl->mod_end - mdl->mod_start); // Initialize TAR from module data
     // tar_t file = tar_get_file(tar, "initrd/tar.h"); // Retrieve specific file from TAR archive
     // LOG("%s", file.ptr); // Log the contents of the retrieved file
