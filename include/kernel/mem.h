@@ -27,12 +27,12 @@ typedef struct
 
 struct memblock_entry
 {
-    uint32_t size;
-	uint32_t addr, addr_high;
+    uint32_t addr, addr_high;
     // You can also use: unsigned long long int base_addr; if supported.
 	uint32_t len, len_high;
     // You can also use: unsigned long long int length; if supported.
 	uint32_t type;
+	uint32_t zero;
 } __attribute__((packed));
 typedef struct memblock_entry memblock_entry_t;
 

@@ -48,49 +48,45 @@ static void merge_blocks(mem_block_t *start) {
 	}
 }
 
-// Function to allocate aligned memory blocks dynamically
 void* kaligned_alloc(size_t size, size_t alignment) {
-    if(size == 0) return NULL; // Return NULL for zero-size allocation
+    if(size == 0) return NULL;
 
     if(size > m_dyn_available) {
-        // PANIC: Not enough available memory
+        //PANIC
     }
 
     mem_block_t *block = m_dyn_first_block;
 
 	while (block) {
-		if (block->free && block->size >= (alignment + sizeof(mem_block_t) + size)) { 
-            // Check if block is free and large enough for allocation
-            
-			void *addr = block->data + alignment - 1; // Adjust address for alignment
-			addr -= (uintptr_t)addr % alignment + sizeof(mem_block_t); 
-			mem_block_t *second = (mem_block_t *)addr; 
+		if (block->free && block->size >= (alignment + sizeof(mem_block_t) + size)) {
 
-			mem_block_t *third = (mem_block_t *)(second->data + size); 
-			tmemset(third, 0, sizeof(mem_block_t)); // Initialize new block
+			void *addr = block->data + alignment - 1;
+			addr -= (uintptr_t)addr % alignment + sizeof(mem_block_t);
+			mem_block_t *second = (mem_block_t *)addr;
+			
+			mem_block_t *third = (mem_block_t *)(second->data + size);
+			tmemset(third, 0, sizeof(mem_block_t));
+			
+			third->size = block->size - (third->data - block->data);
+			third->next = block->next;
+			third->free = 1;
 
-			third->size = block->size - (third->data - block->data); // Set size for third block
-			third->next = block->next; 
-			third->free = 1; 
+			second->size = size;
+			second->next = third;
+			second->free = 0;
+			second->task_id = 0;
 
-			second->size = size; 
-			second->next = third; 
-			second->free = 0; 
-			second->task_id = 0; 
-
-			if (block != second) { 
-				block->next = second; 
-				block->size = (uintptr_t)second - (uintptr_t)block->data; 
-				block->free = 1; 
+			if (block != second) {
+				block->next = second;
+				block->size = (uintptr_t)second - (uintptr_t)block->data;
+				block->free = 1;
 			}
-
-			return second->data; // Return pointer to allocated data
+			
+			return second->data;
 		}
-
-		block = block->next; // Move to the next block
+		block = block->next;
 	}
-
-	return NULL; // Return NULL if no suitable block found
+	return NULL;
 }
 
 // Function to allocate memory without alignment requirement

@@ -1,8 +1,9 @@
-#include <kernel.h>      // Include kernel header for kernel-related functions
-#include <drivers/vbe.h> // Include VESA BIOS Extensions driver header
-#include <x86.h>         // Include x86 architecture-specific definitions
-#include <modules.h>     // Include module management header
-#include <vfs.h>      // Include TAR file system header
+#include <kernel.h>
+#include <drivers/vbe.h>
+#include <x86.h>
+#include <modules.h>
+#include <vfs.h>
+#include <mem.h>
 
 // Kernel main entry point
 int kmain(multiboot_uint32_t magic, uint32_t addr)
@@ -10,7 +11,6 @@ int kmain(multiboot_uint32_t magic, uint32_t addr)
     seg_init();           // Initialize segment descriptors
     idt_init();           // Initialize the Interrupt Descriptor Table (IDT)
     sys_init(magic, addr, 0); // Initialize system with multiboot information
-
 
     vfs_init();
     vfs_mount("/dev/null", (void*)1); //test

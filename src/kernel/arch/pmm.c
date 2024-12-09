@@ -317,7 +317,7 @@ void mm_init(void* mmap_addr, uint32_t mmap_length)
                 oldblock->next = newblock;
             }
 
-            LOG("addr = %x, len = %x, size = %x, type = %i, ret = %x\n", (uint32_t)me->addr, (uint32_t)me->len, me->size, me->type, newblock);
+            LOG("addr = %x, len = %x, type = %i, ret = %x\n", (uint32_t)me->addr, (uint32_t)me->len, me->type, newblock);
         }
     }
 }

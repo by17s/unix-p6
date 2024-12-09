@@ -9,3 +9,4 @@ tmp/
 *.lck
 *.tmp
 *.iso
+iso/boot/initrd.tar
