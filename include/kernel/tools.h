@@ -104,6 +104,10 @@ uint16_t tflip_uint16(uint16_t num);
 
 void __doprnt_put_string(char* str, void (*_putch)(char));
 
+int __snprintf(char* str, int size, const char* format, ...);
+
+int __itoa(int value, char* buffer, int buffer_size);
+
 void __doprnt(const char* fmt, va_list argp, void (*_putch)(char));
 
 void _cpuid(uint32_t leaf, uint32_t *eax, uint32_t *ebx, uint32_t *ecx, uint32_t *edx);

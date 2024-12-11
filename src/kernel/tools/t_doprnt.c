@@ -67,3 +67,100 @@ void __doprnt(const char* fmt, va_list argp, void (*_putch)(char)) {
         }
     }
 }
+
+int __itoa(int value, char* buffer, int buffer_size) {
+    int index = 0;
+    if (value < 0) {
+        if (index < buffer_size - 1) {
+            buffer[index++] = '-';
+        }
+        value = -value;
+    }
+    int temp = value;
+    int digits = 1;
+    while ((temp /= 10) > 0) {
+        digits++;
+    }
+
+    if (digits >= buffer_size) {
+        return 0; //not enough space
+    }
+
+    for (int i = digits - 1; i >= 0; i--) {
+        buffer[index + i] = '0' + (value % 10);
+        value /= 10;
+    }
+    index += digits;
+    if (index < buffer_size) {
+        buffer[index] = '\0';
+    }
+    return index;
+}
+
+int __snprintf(char* str, int size, const char* format, ...) {
+    if (!str || size <= 0 || !format) {
+        return -1;
+    }
+
+    va_list args;
+    va_start(args, format);
+
+    int total_written = 0;
+    int i = 0; 
+    int buffer_index = 0;
+
+    while (format[i] != '\0') {
+        if (format[i] == '%') {
+            i++;
+            if (format[i] == '\0') break;
+
+            if (format[i] == 'd') { // numeric
+                int value = va_arg(args, int);
+                char temp_buffer[32];
+                int written = __itoa(value, temp_buffer, sizeof(temp_buffer));
+                for (int j = 0; j < written && buffer_index < size - 1; j++) {
+                    str[buffer_index++] = temp_buffer[j];
+                }
+                total_written += written;
+            } else if (format[i] == 's') { // string
+                const char* value = va_arg(args, const char*);
+                for (int j = 0; value[j] != '\0'; j++) {
+                    if (buffer_index < size - 1) {
+                        str[buffer_index++] = value[j];
+                    }
+                    total_written++;
+                }
+            } else if (format[i] == 'c') { // char
+                char value = (char)va_arg(args, int);
+                if (buffer_index < size - 1) {
+                    str[buffer_index++] = value;
+                }
+                total_written++;
+            } else { // undef id
+                if (buffer_index < size - 1) {
+                    str[buffer_index++] = '%';
+                }
+                total_written++;
+                if (buffer_index < size - 1) {
+                    str[buffer_index++] = format[i];
+                }
+                total_written++;
+            }
+        } else {
+            if (buffer_index < size - 1) {
+                str[buffer_index++] = format[i];
+            }
+            total_written++;
+        }
+        i++;
+    }
+
+    if (buffer_index < size) {
+        str[buffer_index] = '\0'; // termination
+    } else if (size > 0) {
+        str[size - 1] = '\0'; //cut string
+    }
+
+    va_end(args);
+    return total_written;
+}
